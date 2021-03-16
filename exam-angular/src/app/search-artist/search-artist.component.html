@@ -1,0 +1,55 @@
+<div class="container-nav">
+  <input
+    class="nav__input"
+    type="text"
+    name="artist"
+    id="artist"
+    [formControl]="artist"
+    (keyup.enter)="submit()"
+    placeholder="Search for an Artist and Press Enter"
+    required
+  />
+</div>
+<ng-container *ngIf="allData.length > 0; else elseTemplate">
+  <div class="container-list-result-info">
+    {{ allData.length }} result{{ allData.length < 1 ? null : "s" }} found for {{ saveArtist }}
+    <form class="list-result__filter">
+      <select
+        name="filterArtist"
+        #filterArtist
+        [(ngModel)]="displayArtist"
+        (change)="setDisplayAmount()"
+      >
+        <option [value]="200" selected>Display results - default (200)</option>
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </form>
+  </div>
+  <div class="display-artist">
+    <div *ngFor="let data of allData; index as i" class="display-artist__card">
+      <mat-card *ngIf="i <= +displayArtist">
+        <mat-card-header>
+          <mat-card-title matTooltip="{{ data.collectionName }}">{{
+            data.collectionName.length > 25
+              ? data.collectionName.slice(0, 20) + "..."
+              : data.collectionName
+          }}</mat-card-title>
+        </mat-card-header>
+        <img mat-card-image src="{{ data.artworkUrl100 }}" />
+        <mat-card-content>
+          {{ data.artistName }}
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button>LIKE</button>
+          <button mat-button>SHARE</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #elseTemplate>
+  <div class="container-list-result-info">No Results Found. Please try again.</div>
+</ng-template>
